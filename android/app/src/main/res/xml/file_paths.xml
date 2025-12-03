@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- مسار التخزين الداخلي -->
+    <files-path
+        name="internal_files"
+        path="." />
+    
+    <!-- مسار التخزين المؤقت -->
+    <cache-path
+        name="cache_files"
+        path="." />
+    
+    <!-- مسار التخزين الخارجي -->
+    <external-files-path
+        name="external_files"
+        path="." />
+    
+    <!-- مسار الكاميرا -->
+    <external-path
+        name="external"
+        path="." />
+    
+    <!-- مسار الصور الخارجية -->
+    <external-files-path
+        name="external_images"
+        path="Pictures" />
+    
+    <!-- مسار DCIM -->
+    <external-path
+        name="external_storage_root"
+        path="." />
+    
+    <!-- مسار Downloads -->
+    <external-path
+        name="downloads"
+        path="Download" />
+</paths>
