@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:to_do/core/cache/cache_consumer_impl.dart';
+import 'package:to_do/core/cache/cache_user_repository.dart';
 import 'package:to_do/core/theme/app_colors.dart';
 import 'package:to_do/core/theme/theme_provider.dart';
 import 'package:to_do/core/utils/constants.dart';
 import 'package:to_do/core/utils/functions.dart';
 import 'package:to_do/core/utils/image_service.dart';
+import 'package:to_do/features/auth/data/user_model.dart';
+import 'package:to_do/features/auth/data/user_provider.dart';
 import 'package:to_do/features/auth/presentation/pages/login_page.dart';
 import 'package:to_do/features/tasks/presentation/widgets/info_tile.dart';
-import '../../../../core/cache/cache_user_repository.dart';
-import '../../../auth/data/user_model.dart';
 
 // ignore: must_be_immutable
 class ProfilePage extends StatelessWidget {
@@ -21,6 +22,7 @@ class ProfilePage extends StatelessWidget {
     null,
   );
   final ValueNotifier<File?> _profileImageNotifier = ValueNotifier<File?>(null);
+
   late CacheUserRepository _repo;
 
   Future<void> _initUser(BuildContext context) async {
@@ -31,7 +33,6 @@ class ProfilePage extends StatelessWidget {
     final user = _repo.getUser();
     _userNotifier.value = user;
 
-    // جلب الصورة المحفوظة
     if (user?.profileImagePath != null) {
       final imageFile = File(user!.profileImagePath!);
       if (await imageFile.exists()) {
@@ -40,28 +41,28 @@ class ProfilePage extends StatelessWidget {
     }
   }
 
-  Future<void> _updateUser(UserModel updatedUser) async {
+  Future<void> _updateUser(BuildContext context, UserModel updatedUser) async {
     await _repo.saveUser(updatedUser);
     _userNotifier.value = updatedUser;
+
+    Provider.of<UserProvider>(context, listen: false).updateUser(updatedUser);
   }
 
-  Future<void> _pickAndSaveImage() async {
+  Future<void> _pickAndSaveImage(BuildContext context) async {
     final File? pickedImage = await ImageService.pickImageFromGallery();
 
     if (pickedImage != null) {
-      // حفظ الصورة محلياً
       final savedImage = await ImageService.saveImageLocally(pickedImage);
 
-      // تحديث قيمة الصورة
       _profileImageNotifier.value = savedImage;
 
-      // تحديث بيانات المستخدم
       final currentUser = _userNotifier.value;
       if (currentUser != null) {
         final updatedUser = currentUser.copyWith(
           profileImagePath: savedImage.path,
         );
-        _updateUser(updatedUser);
+
+        _updateUser(context, updatedUser);
       }
     }
   }
@@ -70,7 +71,6 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    // تهيئة البيانات عند أول مرة يتم فيها بناء الصفحة
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_userNotifier.value == null) {
         _initUser(context);
@@ -90,7 +90,7 @@ class ProfilePage extends StatelessWidget {
           valueListenable: _profileImageNotifier,
           builder: (context, profileImage, child) {
             return Padding(
-              padding: const EdgeInsets.all(AppConstants.defaultPadding),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -102,8 +102,11 @@ class ProfilePage extends StatelessWidget {
                           radius: 50,
                           backgroundColor: AppColors.lightSurface,
                           backgroundImage: profileImage != null
-                              ? FileImage(profileImage) as ImageProvider
-                              : NetworkImage(AppConstants.defaultAvatar),
+                              ? FileImage(profileImage)
+                              : user.profileImagePath != null
+                              ? FileImage(File(user.profileImagePath!))
+                              : NetworkImage(AppConstants.defaultAvatar)
+                                    as ImageProvider,
                           child:
                               profileImage == null &&
                                   user.profileImagePath == null
@@ -118,7 +121,7 @@ class ProfilePage extends StatelessWidget {
                           bottom: 0,
                           right: 0,
                           child: GestureDetector(
-                            onTap: _pickAndSaveImage,
+                            onTap: () => _pickAndSaveImage(context),
                             child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
@@ -166,7 +169,6 @@ class ProfilePage extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  /// Profile Info Title
                   Text(
                     AppConstants.profileInfo,
                     style: TextStyle(
@@ -178,42 +180,38 @@ class ProfilePage extends StatelessWidget {
 
                   const SizedBox(height: AppConstants.largePadding),
 
-                  /// ✅ First Name
                   ProfileInfoRow(
                     icon: Icons.person,
                     label: AppConstants.firstName,
                     value: user.firstName,
                     onEdit: (newVal) {
                       final updatedUser = user.copyWith(firstName: newVal);
-                      _updateUser(updatedUser);
+                      _updateUser(context, updatedUser);
                     },
                   ),
 
-                  /// ✅ Last Name
                   ProfileInfoRow(
                     icon: Icons.person,
                     label: AppConstants.lastName,
                     value: user.lastName,
                     onEdit: (newVal) {
                       final updatedUser = user.copyWith(lastName: newVal);
-                      _updateUser(updatedUser);
+                      _updateUser(context, updatedUser);
                     },
                   ),
 
-                  /// ✅ Email
                   ProfileInfoRow(
                     icon: Icons.email,
                     label: AppConstants.email,
                     value: user.email,
                     onEdit: (newVal) {
                       final updatedUser = user.copyWith(email: newVal);
-                      _updateUser(updatedUser);
+                      _updateUser(context, updatedUser);
                     },
                   ),
 
                   const SizedBox(height: 30),
 
-                  /// Settings Title
                   Text(
                     AppConstants.settings,
                     style: TextStyle(
@@ -225,7 +223,6 @@ class ProfilePage extends StatelessWidget {
 
                   const SizedBox(height: AppConstants.largePadding),
 
-                  /// Dark Mode Row
                   Row(
                     children: [
                       Icon(
