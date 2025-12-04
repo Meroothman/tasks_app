@@ -1,3 +1,4 @@
+
 # 📱 ToDo Task Manager
 
 <div align="center">
@@ -15,6 +16,8 @@
 ## 🎯 Overview
 
 **Tasky** is a beautiful and intuitive task management application built with Flutter. Manage your daily tasks efficiently with a clean interface, dark/light mode support, and offline data persistence.
+
+---
 
 ## ✨ Features
 
@@ -40,15 +43,25 @@
 - 🍎 **iOS** - Native iOS experience
 - 💻 **Responsive Design** - Adapts to different screen sizes
 
+---
+
 ## 🖼️ Screenshots
 
-| ![Login Screen](aassets/images/login.png) |                    | ![Sign up Screen](assets/images/sign_up.png) | ![Home Screen](assets/images/home.png) (assets/images/home2.png) | ![Tasks Screen](assets/images/todo.png) |     | ![Compeleted Tasks Screen](assets/images/compeleted.png) |     | ![Profile Screen](assets/images/profile.png) |
-| :---------------------------------------: | :----------------: | :------------------------------------------: | ---------------------------------------------------------------- | --------------------------------------- | --- | -------------------------------------------------------- | --- | -------------------------------------------- |
-|                 **Login**                 | **Home Dashboard** |                **Task List**                 |
+### 🌞 Light Mode
 
-| ![Dark Mode](assets/images/home3.png) | ![Profile](assets/images/profile3.png) | ![Taks](assets/images/todo2.png) | ![compeleted Taks](assets/images/compeleted2.png) | [Add Task](assets/images/addTask.png) |
-| :-----------------------------------: | :------------------------------------: | :------------------------------: | ------------------------------------------------- | ------------------------------------- |
-|             **Dark Mode**             |
+| Login | Sign Up | Home | Tasks | Completed | Profile | Add Task |
+|-------|---------|------|-------|-----------|----------|----------|
+| ![](assets/images/login.png) | ![](assets/images/sign_up.png) | ![](assets/images/home.png) | ![](assets/images/todo.png) | ![](assets/images/compeleted.png) | ![](assets/images/profile.png) | ![](assets/images/addTask.png) |
+
+---
+
+### 🌙 Dark Mode
+
+| Home | Tasks | Completed | Profile |
+|------|-------|-----------|---------|
+| ![](assets/images/home3.png) | ![](assets/images/todo2.png) | ![](assets/images/compeleted2.png) | ![](assets/images/profile3.png) |
+
+---
 
 ## 🚀 Getting Started
 
